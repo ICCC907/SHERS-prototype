@@ -54,15 +54,20 @@ def homepage():
             st.rerun()
         return
    
-    if search:  # 只有当用户输入了内容
+    if search:
         results = [p for p in st.session_state.ALL_PRODUCTS if search.lower() in p['name'].lower()]
-        st.success(f"{len(results)} results found")
-    for idx, item in enumerate(results):
-        st.image(item['images'][0], width=200)
-        st.write(f"**{item['name']}** - €{item['price']}/day - 📍 {item['location']}")
-        if st.button(f"View Details {item['name']}", key=f"view_{idx}"):
-            st.session_state.selected_product = item
-            st.rerun()
+        st.success(f"{len(results)} result(s) found.")
+
+        for idx, item in enumerate(results):
+            st.image(item['images'][0], width=200)
+            st.write(f"**{item['name']}** - €{item['price']}/day - 📍 {item['location']}")
+            ins = "🛡️ Insured" if item.get("insurance") else "❌ No insurance"
+            st.write(f"Insurance: {ins}")
+            if st.button(f"View {item['name']}", key=f"view_{idx}"):
+                st.session_state.selected_product = item
+                st.rerun()
+    else:
+        st.info("Please enter a keyword to search for equipment.")
 
 
 def publish_page():
@@ -154,7 +159,7 @@ def profile_page():
         st.write("Status：" + ("Rented" if item['borrower'] else "Not rented yet"))
 
     st.subheader("🛒 My order")
-    owned = [p for p in st.session_state.ALL_PRODUCTS if p['owner'] == st.session_state.current_user]
+    my_orders = [p for p in st.session_state.ALL_PRODUCTS if p['owner'] == st.session_state.current_user]
     for order in my_orders:
         st.write(f"Equipment：{order['item']}，Price：€{order['price']}，Return status：{'✅ Returned' if order['returned'] else '❌ Not returned'}")
         if not order['returned'] and st.button(f"Return {order['item']}", key=f"return_{order['item']}"):
