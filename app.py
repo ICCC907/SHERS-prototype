@@ -35,14 +35,16 @@ def register_user(username, password):
         return False
     st.session_state.users[username] = password
     return True
-
+    
 # 主页面入口
 def main_page():
     st.sidebar.success(f"👋 Welcome，{st.session_state.current_user}")
-    page = st.sidebar.radio("SHERS", ["Rent", "Rent out", "Customer service", "My information"])
-    st.sidebar.button("Log out", on_click=lambda: st.session_state.update({'logged_in': False, 'current_user': None}))
+    page = st.sidebar.radio("SHERS", ["Home","Rent", "Rent out", "Customer service", "My information"])
 
-    if page == "Rent":
+    st.sidebar.button("Log out", on_click=lambda: st.session_state.update({'logged_in': False, 'current_user': None}))
+    if page == "Welcome":
+        welcome_page()
+    elif page == "Rent":
         homepage()
     elif page == "Rent out":
         publish_page()
@@ -50,7 +52,17 @@ def main_page():
         support_page()
     elif page == "My information":
         profile_page()
-
+        
+def welcome_page():
+    st.title("🎉 Welcome to SHERS!")
+    st.write("SHERS (Second-Hand Equipment Rental Service) is designed to help international students and temporary residents in Finland easily rent and lend sports equipment.")
+    st.markdown("**Key Features:**")
+    st.markdown("- 🛠️ List your unused equipment")
+    st.markdown("- 🔍 Search and rent nearby gear")
+    st.markdown("- 🚚 Support pickup delivery")
+    st.markdown("- 💬 Chat with owners")
+    st.markdown("- ✅ Easy returns and personal tracking")
+    st.info("Use the sidebar to start exploring!")
 # 平台首页
 def homepage():
     st.title("🏋️ SHERS Rent an equipment")
