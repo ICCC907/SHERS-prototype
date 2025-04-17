@@ -100,8 +100,8 @@ def detail_view(product):
         if not user_loc:
             st.warning("Enter pickup address.")
         else:
-        product['borrower'] = st.session_state.current_user
-        st.session_state.orders.append({
+            product['borrower'] = st.session_state.current_user
+            st.session_state.orders.append({
             'user': st.session_state.current_user,
             'item': product['name'],
             'price': product['price'],
