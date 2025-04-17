@@ -38,7 +38,7 @@ def register_user(username, password):
 def main_page():
     st.sidebar.success(f"👋 Welcome，{st.session_state.current_user}")
     page = st.sidebar.radio("SHERS", ["Rent", "Rent out", "Customer service", "My information"])
-    st.sidebar.button("Sign out", on_click=lambda: st.session_state.update({'logged_in': False, 'current_user': None}))
+    st.sidebar.button("Log out", on_click=lambda: st.session_state.update({'logged_in': False, 'current_user': None}))
 
     if page == "Rent":
         homepage()
@@ -107,7 +107,7 @@ def detail_view(product):
     st.write(f"💰 Daily price：€{product['price']}")
 
     st.subheader("💳 Pay")
-    if st.button("模拟支付"):
+    if st.button("Simulated paymentv"):
         st.success("✅ Payment successful! Thank you for your contribution to protecting the environment.")
         product['borrower'] = st.session_state.current_user
         st.session_state.orders.append({
@@ -117,22 +117,22 @@ def detail_view(product):
             'returned': False
         })
 
-    st.subheader("💬 留言板")
+    st.subheader("💬 Messages")
     if product['name'] not in st.session_state.messages:
         st.session_state.messages[product['name']] = []
-    msg = st.text_input("发送消息给出租者")
-    if st.button("发送消息"):
+    msg = st.text_input("Send a message to renter")
+    if st.button("Send"):
         st.session_state.messages[product['name']].append((st.session_state.current_user, msg))
     for sender, text in st.session_state.messages[product['name']]:
         st.info(f"**{sender}**：{text}")
 
 # 客服中心
 def support_page():
-    st.title("🛎️ 客服中心")
-    question = st.text_area("你遇到的问题 / 意见")
-    if st.button("发送给客服"):
+    st.title("🛎️ Customer service")
+    question = st.text_area("Your problems/feedback")
+    if st.button("Send"):
         st.session_state.support_messages.append((st.session_state.current_user, question))
-        st.success("已发送，客服将在24小时内回复（模拟）")
+        st.success("Successfully sent. The customer service will reply within 24 hours")
 
     if st.session_state.current_user == "admin":
         st.subheader("📬 客服收件箱（管理员可见）")
@@ -141,42 +141,42 @@ def support_page():
 
 # 我的个人中心
 def profile_page():
-    st.title("🧍 我的个人中心")
+    st.title("🧍 My information")
 
-    st.subheader("📦 我的出租器材")
+    st.subheader("📦 My rented equipment")
     owned = [p for p in st.session_state.products if p['owner'] == st.session_state.current_user]
     for item in owned:
         st.write(f"**{item['name']}** - €{item['price']}/天")
         st.image(item['images'][0], width=150)
-        st.write("状态：" + ("已出租" if item['borrower'] else "空闲"))
+        st.write("Status：" + ("Rented" if item['borrower'] else "Not rented yet"))
 
-    st.subheader("🛒 我的订单")
+    st.subheader("🛒 My order")
     my_orders = [o for o in st.session_state.orders if o['user'] == st.session_state.current_user]
     for order in my_orders:
-        st.write(f"器材：{order['item']}，租金：€{order['price']}，归还状态：{'✅ 已归还' if order['returned'] else '❌ 未归还'}")
-        if not order['returned'] and st.button(f"确认归还 {order['item']}", key=f"return_{order['item']}"):
+        st.write(f"Equipment：{order['item']}，Price：€{order['price']}，Return status：{'✅ Returned' if order['returned'] else '❌ Not returned'}")
+        if not order['returned'] and st.button(f"Return {order['item']}", key=f"return_{order['item']}"):
             order['returned'] = True
-            st.success(f"你已归还 {order['item']}")
+            st.success(f"You have successfully returned {order['item']}")
 
 # 登录 / 注册界面
 if not st.session_state.logged_in:
-    st.title("🔐 登录 / 注册")
-    tab1, tab2 = st.tabs(["登录", "注册"])
+    st.title("🔐 Welcome to the SHERS platform")
+    tab1, tab2 = st.tabs(["Log in", "Sign up"])
     with tab1:
-        user = st.text_input("用户名", key="login_user")
-        pwd = st.text_input("密码", type="password", key="login_pwd")
-        if st.button("登录"):
+        user = st.text_input("Username", key="login_user")
+        pwd = st.text_input("Password", type="password", key="login_pwd")
+        if st.button("Log in"):
             if login_user(user, pwd):
                 st.rerun()
             else:
-                st.error("用户名或密码错误")
+                st.error("Your username or password is incorrect. Please try again.")
     with tab2:
-        new_user = st.text_input("新用户名")
-        new_pwd = st.text_input("新密码", type="password")
-        if st.button("注册"):
+        new_user = st.text_input("Username")
+        new_pwd = st.text_input("Password", type="password")
+        if st.button("Sign up"):
             if register_user(new_user, new_pwd):
-                st.success("注册成功！请登录")
+                st.success("Registration successful! Please log in.")
             else:
-                st.error("用户名已存在")
+                st.error("The user name already exists.")
 else:
     main_page()
