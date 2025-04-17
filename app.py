@@ -52,13 +52,21 @@ def main_page():
 # 平台首页
 def homepage():
     st.title("🏋️ SHERS 平台首页 - 搜索器材")
-    search = st.text_input("搜索器材关键词（如：自行车）")
 
-    results = []
-    if st.button("搜索"):
-        results = [p for p in st.session_state.products if search.lower() in p['name'].lower()]
-        st.success(f"找到 {len(results)} 条结果")
+    # 搜索栏保留输入，不强依赖按钮
+    search = st.text_input("搜索器材关键词（如：自行车）", key="search_input")
 
+    # 如果处于“查看详情模式”
+    if st.session_state.selected_product:
+        detail_view(st.session_state.selected_product)
+        if st.button("🔙 返回搜索结果"):
+            st.session_state.selected_product = None
+            st.rerun()
+        return  # 提前退出，避免再渲染搜索结果列表
+
+    # 常驻搜索结果
+    results = [p for p in st.session_state.products if search.lower() in p['name'].lower()]
+    st.success(f"找到 {len(results)} 条结果")
     for idx, item in enumerate(results):
         st.image(item['images'][0], width=200)
         st.write(f"**{item['name']}** - €{item['price']}/天")
@@ -66,9 +74,6 @@ def homepage():
             st.session_state.selected_product = item
             st.rerun()
 
-    # ✅ 无论是否搜索，都检测是否需要展示详情页
-    if st.session_state.selected_product:
-        detail_view(st.session_state.selected_product)
 
 
 # 发布器材
