@@ -34,15 +34,13 @@ def get_coords(location_name):
 def welcome_page():
     st.title("🎉 Welcome to SHERS!")
     st.write("SHERS (Second-Hand Equipment Rental Service) is designed to help you easily rent sports equipment.")
-    st.markdown("- 🛠️ List your unused equipment")
-    st.markdown("- 🔍 Search and rent nearby gear")
-    st.markdown("- 🚚 Pickup support")
+    st.markdown("- 🛠️ Rent out your unused equipment")
+    st.markdown("- 🔍 Search and rent nearby equipment")
+    st.markdown("- 🚚 Delivery support")
     st.markdown("- 💬 Chat with owners")
     st.markdown("- ✅ Easy return and order tracking")
     st.markdown("---")
-    st.metric("♻️ 已节省 CO₂ 排放", "102.9 吨")
-    st.metric("📦 累计器材租借次数", "10,993 次")
-    st.metric("👥 平台用户人数", "4,000+")
+    st.metric("♻️ Plan to save CO₂ emissions", "200 tons")
 
 def homepage():
     st.title("🔍 Search Equipment")
@@ -115,7 +113,7 @@ def detail_view(product):
     st.subheader("💬 Messages")
     if product['name'] not in st.session_state.messages:
         st.session_state.messages[product['name']] = []
-    msg = st.text_input("Send a message to renter")
+    msg = st.text_input("Send a message to the owner")
     if st.button("Send"):
         st.session_state.messages[product['name']].append((st.session_state.current_user, msg))
     for sender, text in st.session_state.messages[product['name']]:
@@ -157,7 +155,7 @@ def logout():
 
 def main_page():
     st.sidebar.success(f"👋 Welcome, {st.session_state.current_user}")
-    pages = ["Welcome", "Search Equipment", "List Equipment", "My Account", "Customer Support"]
+    pages = ["Home", "Search Equipment", "Rent Out Equipment", "My Information", "Customer Support"]
     selected = st.sidebar.radio("Navigation", pages)
     if "active_page" not in st.session_state:
         st.session_state.active_page = selected
@@ -167,13 +165,13 @@ def main_page():
         st.rerun()
     st.sidebar.button("Log out", on_click=logout)
 
-    if selected == "Welcome":
+    if selected == "Home":
         welcome_page()
     elif selected == "Search Equipment":
         homepage()
     elif selected == "List Equipment":
         publish_page()
-    elif selected == "My Account":
+    elif selected == "My Information":
         profile_page()
     elif selected == "Customer Support":
         support_page()
