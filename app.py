@@ -62,15 +62,20 @@ def homepage():
             st.rerun()
 
 def publish_page():
-    st.title("📦 Rent out your equipment")
+    if not st.session_state.logged_in:
+        st.warning("Please log in to list equipment.")
+        return
+
+    st.title("📦 List Equipment")
     name = st.text_input("Name")
     desc = st.text_area("Description")
-    price = st.number_input("Rent price (€)", min_value=1)
+    price = st.number_input("Price per day (€)", min_value=1)
     location = st.text_input("📍 Location")
-    images = st.file_uploader("Add pictures for your equipment", type=["png", "jpg"], accept_multiple_files=True)
-    if st.button("Upload"):
+    images = st.file_uploader("Upload photos", type=["png", "jpg"], accept_multiple_files=True)
+
+    if st.button("Submit"):
         if not name or not images or not location:
-            st.warning("Please fill in all the information.")
+            st.warning("Please fill all fields.")
         else:
             st.session_state.products.append({
                 'name': name,
@@ -82,7 +87,8 @@ def publish_page():
                 'borrower': None,
                 'returned': False
             })
-            st.success("Listed successfully!")
+            st.success("Your equipment has been listed successfully!")
+
 
 def detail_view(product):
     st.title(product['name'])
