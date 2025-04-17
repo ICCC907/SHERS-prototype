@@ -42,7 +42,7 @@ def main_page():
     page = st.sidebar.radio("SHERS", ["Home","Rent", "Rent out", "Customer service", "My information"])
 
     st.sidebar.button("Log out", on_click=lambda: st.session_state.update({'logged_in': False, 'current_user': None}))
-    if page == "Welcome":
+    if page == "Home":
         welcome_page()
     elif page == "Rent":
         homepage()
@@ -62,6 +62,10 @@ def welcome_page():
     st.markdown("- 🚚 Support pickup delivery")
     st.markdown("- 💬 Chat with owners")
     st.markdown("- ✅ Easy returns and personal tracking")
+    st.markdown("---")
+    st.metric("♻️ 已节省 CO₂ 排放", "102.9 吨")
+    st.metric("📦 累计器材租借次数", "10,993 次")
+    st.metric("👥 平台用户人数", "4,000+")
     st.info("Use the sidebar to start exploring!")
 # 平台首页
 def homepage():
