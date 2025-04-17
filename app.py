@@ -220,7 +220,7 @@ if not st.session_state.logged_in:
     with tab2:
         new_user = st.text_input("Username")
         new_pwd = st.text_input("Password", type="password")
-        if st.button("Sign upr"):
+        if st.button("Sign up"):
             if new_user in st.session_state.users:
                 st.error("Username already exists.")
             else:
