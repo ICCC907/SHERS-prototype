@@ -42,10 +42,10 @@ def welcome_page():
 
 def homepage():
     st.title("🔍 Search Equipment")
-    search = st.text_input("Search equipment", key="search_input")
+    search = st.text_input("Feel free to explore and find the device that best suits your preferences", key="search_input")
     if st.session_state.selected_product:
         detail_view(st.session_state.selected_product)
-        if st.button("Back to results"):
+        if st.button("🔙 Search results"):
             st.session_state.selected_product = None
             st.rerun()
         return
@@ -87,7 +87,7 @@ def detail_view(product):
     st.write(product['desc'])
     st.write(f"📍 {product['location']}")
     st.write(f"💰 €{product['price']}/day")
-    user_loc = st.text_input("📍 Your pickup address")
+    user_loc = st.text_input("📍 Your address")
     if user_loc:
         coords1 = get_coords(product['location'])
         coords2 = get_coords(user_loc)
@@ -98,7 +98,7 @@ def detail_view(product):
     st.subheader("💳 Pay")
     if st.button("Simulated payment"):
         if not user_loc:
-            st.warning("Enter pickup address.")
+            st.warning("Enter your address.")
         else:
             product['borrower'] = st.session_state.current_user
             st.session_state.orders.append({
