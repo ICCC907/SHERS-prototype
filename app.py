@@ -94,7 +94,7 @@ def publish_page():
                 'name': name,
                 'desc': desc,
                 'price1': price+0.1*price,
-                'price2': price
+                'price2': price,
                 'location': location,
                 'images': [img.read() for img in images],
                 'insurance': buy_insurance,
