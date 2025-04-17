@@ -38,8 +38,9 @@ def register_user(username, password):
     
 # 主页面入口
 def main_page():
-    st.sidebar.success(f"👋 Welcome，{st.session_state.current_user}")
-    page = st.sidebar.radio("SHERS", ["Home","Rent", "Rent out", "Customer service", "My information"])
+    st.sidebar.success(f"👋 Welcome, {st.session_state.current_user}")
+
+    pages = ["Welcome", "Search Equipment", "List Equipment", "My Account", "Customer Support"]
     selected = st.sidebar.radio("Navigation", pages)
 
     # 页面切换后清空内容
@@ -53,16 +54,19 @@ def main_page():
         st.experimental_rerun()
 
     st.sidebar.button("Log out", on_click=lambda: st.session_state.update({'logged_in': False, 'current_user': None}))
-    if page == "Home":
+
+    # 页面调用
+    if selected == "Welcome":
         welcome_page()
-    elif page == "Rent":
+    elif selected == "Search Equipment":
         homepage()
-    elif page == "Rent out":
+    elif selected == "List Equipment":
         publish_page()
-    elif page == "Customer service":
-        support_page()
-    elif page == "My information":
+    elif selected == "My Account":
         profile_page()
+    elif selected == "Customer Support":
+        support_page()
+
         
 def welcome_page():
     st.title("🎉 Welcome to SHERS!")
