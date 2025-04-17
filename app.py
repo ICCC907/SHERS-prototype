@@ -1,6 +1,5 @@
 import streamlit as st
 from datetime import date
-import random
 from io import BytesIO
 
 # 初始化状态
@@ -18,7 +17,10 @@ if 'messages' not in st.session_state:
     st.session_state.messages = {}
 if 'support_messages' not in st.session_state:
     st.session_state.support_messages = []
+if 'orders' not in st.session_state:
+    st.session_state.orders = []
 
+# 登录注册逻辑
 def login_user(username, password):
     if username in st.session_state.users and st.session_state.users[username] == password:
         st.session_state.logged_in = True
@@ -32,9 +34,10 @@ def register_user(username, password):
     st.session_state.users[username] = password
     return True
 
+# 主页面入口
 def main_page():
     st.sidebar.success(f"👋 欢迎，{st.session_state.current_user}")
-    page = st.sidebar.radio("导航", ["平台首页", "发布器材", "客服中心"])
+    page = st.sidebar.radio("导航", ["平台首页", "发布器材", "客服中心", "我的个人中心"])
     st.sidebar.button("退出登录", on_click=lambda: st.session_state.update({'logged_in': False, 'current_user': None}))
 
     if page == "平台首页":
@@ -43,7 +46,10 @@ def main_page():
         publish_page()
     elif page == "客服中心":
         support_page()
+    elif page == "我的个人中心":
+        profile_page()
 
+# 平台首页
 def homepage():
     st.title("🏋️ SHERS 平台首页 - 搜索器材")
     search = st.text_input("搜索器材关键词（如：自行车）")
@@ -56,12 +62,12 @@ def homepage():
             if st.button(f"查看详情 {idx}", key=f"detail_{idx}"):
                 st.session_state.selected_product = item
                 st.rerun()
-
     if st.session_state.selected_product:
         detail_view(st.session_state.selected_product)
 
+# 发布器材
 def publish_page():
-    st.title("📦 发布吧")
+    st.title("📦 发布器材")
     name = st.text_input("器材名称")
     desc = st.text_area("器材描述")
     price = st.number_input("日租金 (€)", min_value=1)
@@ -75,11 +81,14 @@ def publish_page():
                 'name': name,
                 'desc': desc,
                 'price': price,
-                'images': [image.read() for image in images],
-                'owner': st.session_state.current_user
+                'images': [img.read() for img in images],
+                'owner': st.session_state.current_user,
+                'borrower': None,
+                'returned': False
             })
             st.success("器材已发布！")
 
+# 器材详情
 def detail_view(product):
     st.title(f"📄 器材详情：{product['name']}")
     st.image(product['images'], width=300)
@@ -89,6 +98,13 @@ def detail_view(product):
     st.subheader("💳 支付租金")
     if st.button("模拟支付"):
         st.success("✅ 支付成功！感谢你的租借。")
+        product['borrower'] = st.session_state.current_user
+        st.session_state.orders.append({
+            'user': st.session_state.current_user,
+            'item': product['name'],
+            'price': product['price'],
+            'returned': False
+        })
 
     st.subheader("💬 留言板")
     if product['name'] not in st.session_state.messages:
@@ -99,6 +115,7 @@ def detail_view(product):
     for sender, text in st.session_state.messages[product['name']]:
         st.info(f"**{sender}**：{text}")
 
+# 客服中心
 def support_page():
     st.title("🛎️ 客服中心")
     question = st.text_area("你遇到的问题 / 意见")
@@ -111,7 +128,26 @@ def support_page():
         for user, msg in st.session_state.support_messages:
             st.warning(f"{user} 留言：{msg}")
 
-# 登录注册逻辑
+# 我的个人中心
+def profile_page():
+    st.title("🧍 我的个人中心")
+
+    st.subheader("📦 我的出租器材")
+    owned = [p for p in st.session_state.products if p['owner'] == st.session_state.current_user]
+    for item in owned:
+        st.write(f"**{item['name']}** - €{item['price']}/天")
+        st.image(item['images'][0], width=150)
+        st.write("状态：" + ("已出租" if item['borrower'] else "空闲"))
+
+    st.subheader("🛒 我的订单")
+    my_orders = [o for o in st.session_state.orders if o['user'] == st.session_state.current_user]
+    for order in my_orders:
+        st.write(f"器材：{order['item']}，租金：€{order['price']}，归还状态：{'✅ 已归还' if order['returned'] else '❌ 未归还'}")
+        if not order['returned'] and st.button(f"确认归还 {order['item']}", key=f"return_{order['item']}"):
+            order['returned'] = True
+            st.success(f"你已归还 {order['item']}")
+
+# 登录 / 注册界面
 if not st.session_state.logged_in:
     st.title("🔐 登录 / 注册")
     tab1, tab2 = st.tabs(["登录", "注册"])
@@ -133,3 +169,4 @@ if not st.session_state.logged_in:
                 st.error("用户名已存在")
 else:
     main_page()
+
