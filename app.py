@@ -1,9 +1,6 @@
 import streamlit as st
 from geopy.geocoders import Nominatim
 from geopy.distance import geodesic
-# 👇 模拟“全平台共享商品数据库”
-GLOBAL_PRODUCTS = []
-
 
 # 初始化状态
 if 'users' not in st.session_state:
@@ -48,7 +45,6 @@ def welcome_page():
     st.metric("♻️ Plan to save CO₂ emissions", "200 tons")
 
 def homepage():
-    global GLOBAL_PRODUCTS
     st.title("🔍 Search Equipment")
     search = st.text_input("Feel free to explore and find the device that best suits your preferences", key="search_input")
     if st.session_state.selected_product:
@@ -59,8 +55,7 @@ def homepage():
         return
    
     if search:
-        results = [p for p in GLOBAL_PRODUCTS if search.lower() in p['name'].lower()]
-
+        results = [p for p in st.session_state.ALL_PRODUCTS if search.lower() in p['name'].lower()]
         st.success(f"{len(results)} result(s) found.")
 
         for idx, item in enumerate(results):
@@ -80,7 +75,6 @@ def homepage():
 
 
 def publish_page():
-    global GLOBAL_PRODUCTS
     st.title("📦 Rent Out Your Equipment")
     name = st.text_input("Name of equipment")
     desc = st.text_area("Description")
@@ -96,10 +90,10 @@ def publish_page():
         else:
             if buy_insurance:
                 st.info(f"💸 €{insurance_fee} deducted for equipment insurance.")
-            GLOBAL_PRODUCTS.append({
+            st.session_state.ALL_PRODUCTS.append({
                 'name': name,
                 'desc': desc,
-                'price': price + 0.1 * price,
+                'price': price+0.1*price,
                 'location': location,
                 'images': [img.read() for img in images],
                 'insurance': buy_insurance,
@@ -108,7 +102,6 @@ def publish_page():
                 'borrower': None,
                 'returned': False
             })
-
 
             st.success("✅ Successfully uploaded! Thank you for your contribution to protecting the environment.")
 
@@ -160,11 +153,10 @@ def support_page():
             st.warning(f"{u}: {m}")
 
 def profile_page():
-    global GLOBAL_PRODUCTS
     st.title("🧍 My information")
 
     st.subheader("📦 My rented equipment")
-    owned = [p for p in GLOBAL_PRODUCTS if p['owner'] == st.session_state.current_user]
+    owned = [p for p in st.session_state.ALL_PRODUCTS if p['owner'] == st.session_state.current_user]
     for item in owned:
         st.write(f"**{item['name']}** - €{item['price']}/day")
         st.image(item['images'][0], width=150)
