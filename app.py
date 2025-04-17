@@ -69,7 +69,7 @@ def homepage():
     st.success(f"There are {len(results)} search results")
     for idx, item in enumerate(results):
         st.image(item['images'][0], width=200)
-        st.write(f"**{item['name']}** - €{item['price']}/天")
+        st.write(f"**{item['name']}** - €{item['price']}/day")
         if st.button(f"Details {idx}", key=f"detail_{idx}"):
             st.session_state.selected_product = item
             st.rerun()
@@ -84,7 +84,7 @@ def publish_page():
     price = st.number_input("Rent price (€)", min_value=1)
     images = st.file_uploader("Add pictures for your equipment", type=["png", "jpg", "jpeg"], accept_multiple_files=True)
 
-    if st.button("提交发布"):
+    if st.button("Upload"):
         if not name or not images:
             st.warning("Please add at least one picture")
         else:
@@ -101,14 +101,14 @@ def publish_page():
 
 # 器材详情
 def detail_view(product):
-    st.title(f"📄 器材详情：{product['name']}")
+    st.title(f"📄 Details：{product['name']}")
     st.image(product['images'], width=300)
     st.write(product['desc'])
-    st.write(f"💰 日租金：€{product['price']}")
+    st.write(f"💰 Daily price：€{product['price']}")
 
-    st.subheader("💳 支付租金")
+    st.subheader("💳 Pay")
     if st.button("模拟支付"):
-        st.success("✅ 支付成功！感谢你的租借。")
+        st.success("✅ Payment successful! Thank you for your contribution to protecting the environment.")
         product['borrower'] = st.session_state.current_user
         st.session_state.orders.append({
             'user': st.session_state.current_user,
