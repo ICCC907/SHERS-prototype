@@ -59,15 +59,15 @@ def homepage():
             st.rerun()
 
 def publish_page():
-    st.title("📦 List Equipment")
+    st.title("📦 Rent out your equipment")
     name = st.text_input("Name")
     desc = st.text_area("Description")
-    price = st.number_input("Price per day (€)", min_value=1)
+    price = st.number_input("Rent price (€)", min_value=1)
     location = st.text_input("📍 Location")
-    images = st.file_uploader("Upload photos", type=["png", "jpg"], accept_multiple_files=True)
-    if st.button("Submit"):
+    images = st.file_uploader("Add pictures for your equipment", type=["png", "jpg"], accept_multiple_files=True)
+    if st.button("Upload"):
         if not name or not images or not location:
-            st.warning("Please fill all fields.")
+            st.warning("Please fill in all the information.")
         else:
             st.session_state.products.append({
                 'name': name,
@@ -94,19 +94,22 @@ def detail_view(product):
         if coords1 and coords2:
             distance = geodesic(coords1, coords2).km
             st.info(f"Estimated distance: {distance:.2f} km")
-    if st.button("Simulate Payment"):
+
+    st.subheader("💳 Pay")
+    if st.button("Simulated payment"):
         if not user_loc:
             st.warning("Enter pickup address.")
         else:
-            product['borrower'] = st.session_state.current_user
-            st.session_state.orders.append({
-                'user': st.session_state.current_user,
-                'item': product['name'],
-                'price': product['price'],
-                'returned': False,
-                'pickup_location': user_loc
-            })
-            st.success("Payment simulated.")
+        st.success("✅ Payment successful! Thank you for your contribution to protecting the environment.")
+        product['borrower'] = st.session_state.current_user
+        st.session_state.orders.append({
+            'user': st.session_state.current_user,
+            'item': product['name'],
+            'price': product['price'],
+            'returned': False
+            'pickup_location': user_loc
+        })
+
     st.subheader("💬 Messages")
     if product['name'] not in st.session_state.messages:
         st.session_state.messages[product['name']] = []
