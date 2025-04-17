@@ -66,7 +66,7 @@ def homepage():
             if item['borrower'] and not item['returned']:
                 st.warning("🚫 Currently rented")
             else:
-                if st.button(f"View {item['name']}", key=f"view_{idx}"):
+                if st.button(f"View Details", key=f"view_{idx}"):
                     st.session_state.selected_product = item
                     st.rerun()
 
@@ -200,12 +200,12 @@ def main_page():
 
 # 登录界面
 if not st.session_state.logged_in:
-    st.title("🔐 Login / Register")
-    tab1, tab2 = st.tabs(["Login", "Register"])
+    st.title("🔐 Log in / Sign up")
+    tab1, tab2 = st.tabs(["Log in", "Sign up"])
     with tab1:
         user = st.text_input("Username", key="login_user")
         pwd = st.text_input("Password", type="password", key="login_pwd")
-        if st.button("Login"):
+        if st.button("Log in"):
             if user in st.session_state.users and st.session_state.users[user] == pwd:
                 st.session_state.logged_in = True
                 st.session_state.current_user = user
@@ -213,9 +213,9 @@ if not st.session_state.logged_in:
             else:
                 st.error("Incorrect username or password.")
     with tab2:
-        new_user = st.text_input("New Username")
-        new_pwd = st.text_input("New Password", type="password")
-        if st.button("Register"):
+        new_user = st.text_input("Username")
+        new_pwd = st.text_input("Password", type="password")
+        if st.button("Sign upr"):
             if new_user in st.session_state.users:
                 st.error("Username already exists.")
             else:
