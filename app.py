@@ -129,20 +129,24 @@ def support_page():
         for u, m in st.session_state.support_messages:
             st.warning(f"{u}: {m}")
 
+# 我的个人中心
 def profile_page():
-    st.title("👤 My Information")
+    st.title("🧍 My information")
+
     st.subheader("📦 My rented equipment")
-    for p in st.session_state.products:
-        if p['owner'] == st.session_state.current_user:
-            st.write(f"{p['name']} - €{p['price']}/day - {'Rented' if p['borrower'] else 'Available'}")
-            st.image(p['images'][0], width=100)
-    st.subheader("🛒 My Orders")
-    for o in st.session_state.orders:
-        if o['user'] == st.session_state.current_user:
-            st.write(f"{o['item']} - €{o['price']} - Returned: {'✅' if o['returned'] else '❌'}")
-            if not o['returned'] and st.button(f"Return {o['item']}", key=f"ret_{o['item']}"):
-                o['returned'] = True
-                st.success("Marked as returned.")
+    owned = [p for p in st.session_state.products if p['owner'] == st.session_state.current_user]
+    for item in owned:
+        st.write(f"**{item['name']}** - €{item['price']}/天")
+        st.image(item['images'][0], width=150)
+        st.write("Status：" + ("Rented" if item['borrower'] else "Not rented yet"))
+
+    st.subheader("🛒 My order")
+    my_orders = [o for o in st.session_state.orders if o['user'] == st.session_state.current_user]
+    for order in my_orders:
+        st.write(f"Equipment：{order['item']}，Price：€{order['price']}，Return status：{'✅ Returned' if order['returned'] else '❌ Not returned'}")
+        if not order['returned'] and st.button(f"Return {order['item']}", key=f"return_{order['item']}"):
+            order['returned'] = True
+            st.success(f"You have successfully returned {order['item']}")
 
 def logout():
     for key in list(st.session_state.keys()):
