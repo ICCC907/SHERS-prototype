@@ -19,6 +19,8 @@ if 'support_messages' not in st.session_state:
     st.session_state.support_messages = []
 if 'orders' not in st.session_state:
     st.session_state.orders = []
+if 'ALL_PRODUCTS' not in st.session_state:
+    st.session_state.ALL_PRODUCTS = []  # ✅ 存放所有人设备
 
 geolocator = Nominatim(user_agent="shers_app")
 
@@ -51,9 +53,9 @@ def homepage():
             st.session_state.selected_product = None
             st.rerun()
         return
-    results = [p for p in st.session_state.products if search.lower() in p['name'].lower()]
+   
     if search:  # 只有当用户输入了内容
-        results = [p for p in st.session_state.products if search.lower() in p['name'].lower()]
+        results = [p for p in st.session_state.ALL_PRODUCTS if search.lower() in p['name'].lower()]
         st.success(f"{len(results)} results found")
     for idx, item in enumerate(results):
         st.image(item['images'][0], width=200)
@@ -79,16 +81,19 @@ def publish_page():
         else:
             if buy_insurance:
                 st.info(f"💸 €{insurance_fee} deducted for equipment insurance.")
-            st.session_state.products.append({
+            st.session_state.ALL_PRODUCTS.append({
                 'name': name,
                 'desc': desc,
-                'price': price+price*0.1,
+                'price': price,
                 'location': location,
                 'images': [img.read() for img in images],
+                'insurance': buy_insurance,
+                'insurance_fee': insurance_fee,
                 'owner': st.session_state.current_user,
                 'borrower': None,
                 'returned': False
             })
+
             st.success("✅ Successfully uploaded! Thank you for your contribution to protecting the environment.")
 
 def detail_view(product):
@@ -149,7 +154,7 @@ def profile_page():
         st.write("Status：" + ("Rented" if item['borrower'] else "Not rented yet"))
 
     st.subheader("🛒 My order")
-    my_orders = [o for o in st.session_state.orders if o['user'] == st.session_state.current_user]
+    owned = [p for p in st.session_state.ALL_PRODUCTS if p['owner'] == st.session_state.current_user]
     for order in my_orders:
         st.write(f"Equipment：{order['item']}，Price：€{order['price']}，Return status：{'✅ Returned' if order['returned'] else '❌ Not returned'}")
         if not order['returned'] and st.button(f"Return {order['item']}", key=f"return_{order['item']}"):
