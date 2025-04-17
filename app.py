@@ -61,7 +61,7 @@ def homepage():
         detail_view(st.session_state.selected_product)
 
 def publish_page():
-    st.title("📦 发布器材")
+    st.title("📦 发布吧")
     name = st.text_input("器材名称")
     desc = st.text_area("器材描述")
     price = st.number_input("日租金 (€)", min_value=1)
