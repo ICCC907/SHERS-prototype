@@ -55,8 +55,6 @@ def homepage():
     for idx, item in enumerate(results):
         st.image(item['images'][0], width=200)
         st.write(f"**{item['name']}** - €{item['price']}/day - 📍 {item['location']}")
-        status = "✅ Available" if not item['borrower'] or item['returned'] else "❌ Rented"
-        st.write(f"Status: {status}")
         if st.button(f"View {item['name']}", key=f"view_{idx}"):
             st.session_state.selected_product = item
             st.rerun()
