@@ -40,6 +40,17 @@ def register_user(username, password):
 def main_page():
     st.sidebar.success(f"👋 Welcome，{st.session_state.current_user}")
     page = st.sidebar.radio("SHERS", ["Home","Rent", "Rent out", "Customer service", "My information"])
+    selected = st.sidebar.radio("Navigation", pages)
+
+    # 页面切换后清空内容
+    if "active_page" not in st.session_state:
+        st.session_state.active_page = selected
+    elif st.session_state.active_page != selected:
+        # 清除旧页面状态（按需可加更多）
+        st.session_state.selected_product = None
+        st.session_state.get("search_input", None)
+        st.session_state.active_page = selected
+        st.experimental_rerun()
 
     st.sidebar.button("Log out", on_click=lambda: st.session_state.update({'logged_in': False, 'current_user': None}))
     if page == "Home":
