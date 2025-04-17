@@ -36,41 +36,41 @@ def register_user(username, password):
 
 # 主页面入口
 def main_page():
-    st.sidebar.success(f"👋 欢迎，{st.session_state.current_user}")
-    page = st.sidebar.radio("导航", ["平台首页", "发布器材", "客服中心", "我的个人中心"])
-    st.sidebar.button("退出登录", on_click=lambda: st.session_state.update({'logged_in': False, 'current_user': None}))
+    st.sidebar.success(f"👋 Welcome，{st.session_state.current_user}")
+    page = st.sidebar.radio("SHERS", ["Rent", "Rent out", "Customer service", "My information"])
+    st.sidebar.button("Sign out", on_click=lambda: st.session_state.update({'logged_in': False, 'current_user': None}))
 
-    if page == "平台首页":
+    if page == "Rent":
         homepage()
-    elif page == "发布器材":
+    elif page == "Rent out":
         publish_page()
-    elif page == "客服中心":
+    elif page == "Customer service":
         support_page()
-    elif page == "我的个人中心":
+    elif page == "My information":
         profile_page()
 
 # 平台首页
 def homepage():
-    st.title("🏋️ SHERS 平台首页 - 搜索器材")
+    st.title("🏋️ SHERS Rent an equipment")
 
     # 搜索栏保留输入，不强依赖按钮
-    search = st.text_input("搜索器材关键词（如：自行车）", key="search_input")
+    search = st.text_input("Feel free to explore and find the device that best suits your preferences.", key="search_input")
 
     # 如果处于“查看详情模式”
     if st.session_state.selected_product:
         detail_view(st.session_state.selected_product)
-        if st.button("🔙 返回搜索结果"):
+        if st.button("🔙 Search results"):
             st.session_state.selected_product = None
             st.rerun()
         return  # 提前退出，避免再渲染搜索结果列表
 
     # 常驻搜索结果
     results = [p for p in st.session_state.products if search.lower() in p['name'].lower()]
-    st.success(f"找到 {len(results)} 条结果")
+    st.success(f"There are {len(results)} search results")
     for idx, item in enumerate(results):
         st.image(item['images'][0], width=200)
         st.write(f"**{item['name']}** - €{item['price']}/天")
-        if st.button(f"查看详情 {idx}", key=f"detail_{idx}"):
+        if st.button(f"Details {idx}", key=f"detail_{idx}"):
             st.session_state.selected_product = item
             st.rerun()
 
@@ -78,15 +78,15 @@ def homepage():
 
 # 发布器材
 def publish_page():
-    st.title("📦 发布器材")
-    name = st.text_input("器材名称")
-    desc = st.text_area("器材描述")
-    price = st.number_input("日租金 (€)", min_value=1)
-    images = st.file_uploader("上传器材照片（可多选）", type=["png", "jpg", "jpeg"], accept_multiple_files=True)
+    st.title("📦 Rent out your equipment")
+    name = st.text_input("Name of equipment")
+    desc = st.text_area("Description")
+    price = st.number_input("Rent price (€)", min_value=1)
+    images = st.file_uploader("Add pictures for your equipment", type=["png", "jpg", "jpeg"], accept_multiple_files=True)
 
     if st.button("提交发布"):
         if not name or not images:
-            st.warning("请填写名称并上传至少一张图片")
+            st.warning("Please add at least one picture")
         else:
             st.session_state.products.append({
                 'name': name,
@@ -97,7 +97,7 @@ def publish_page():
                 'borrower': None,
                 'returned': False
             })
-            st.success("器材已发布！")
+            st.success("Successfully uploaded")
 
 # 器材详情
 def detail_view(product):
