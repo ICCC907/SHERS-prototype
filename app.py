@@ -51,7 +51,7 @@ def main_page():
         st.session_state.selected_product = None
         st.session_state.get("search_input", None)
         st.session_state.active_page = selected
-        st.experimental_rerun()
+        st.rerun()
 
     st.sidebar.button("Log out", on_click=lambda: st.session_state.update({'logged_in': False, 'current_user': None}))
 
