@@ -60,7 +60,7 @@ def homepage():
 
         for idx, item in enumerate(results):
             st.image(item['images'][0], width=200)
-            st.write(f"**{item['name']}** - €{item['price1']}/day - 📍 {item['location']}")
+            st.write(f"**{item['name']}** - €{item['price2']}/day - 📍 {item['location']}")
             ins = "🛡️ Insured" if item.get("insurance") else "❌ No insurance"
             st.write(f"Insurance: {ins}")
             if item['borrower'] and not item['returned']:
