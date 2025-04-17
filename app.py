@@ -51,9 +51,12 @@ def homepage():
         return
     results = [p for p in st.session_state.products if search.lower() in p['name'].lower()]
     st.write(f"{len(results)} results found.")
+
     for idx, item in enumerate(results):
         st.image(item['images'][0], width=200)
         st.write(f"**{item['name']}** - €{item['price']}/day - 📍 {item['location']}")
+        status = "✅ Available" if not item['borrower'] or item['returned'] else "❌ Rented"
+        st.write(f"Status: {status}")
         if st.button(f"View {item['name']}", key=f"view_{idx}"):
             st.session_state.selected_product = item
             st.rerun()
@@ -99,6 +102,8 @@ def detail_view(product):
     if st.button("Simulated payment"):
         if not user_loc:
             st.warning("Enter your address.")
+        elif product['borrower'] is not None and not product['returned']:
+            st.error("This equipment is currently rented and not yet returned.")
         else:
             product['borrower'] = st.session_state.current_user
             st.session_state.orders.append({
