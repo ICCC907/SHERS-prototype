@@ -83,7 +83,7 @@ def publish_page():
                 'borrower': None,
                 'returned': False
             })
-            st.success("Successfully uploaded")
+            st.success("✅ Successfully uploaded! Thank you for your contribution to protecting the environment.")
 
 def detail_view(product):
     st.title(product['name'])
