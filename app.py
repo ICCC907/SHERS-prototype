@@ -159,7 +159,7 @@ def profile_page():
     st.subheader("📦 My rented equipment")
     owned = [p for p in st.session_state.ALL_PRODUCTS if p['owner'] == st.session_state.current_user]
     for item in owned:
-        st.write(f"**{item['name']}** - €{item['original_price']}/day")
+        st.write(f"**{item['name']}** - €{item.get('original_price', item['price'])}/day")
         st.image(item['images'][0], width=150)
         st.write("Status：" + ("Rented" if item['borrower'] else "Not rented yet"))
 
