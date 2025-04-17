@@ -93,7 +93,8 @@ def publish_page():
             st.session_state.ALL_PRODUCTS.append({
                 'name': name,
                 'desc': desc,
-                'price': price+0.1*price,
+                'price': price + 0.1 * price,         # 这个是租借时展示的
+                'original_price': price,   
                 'location': location,
                 'images': [img.read() for img in images],
                 'insurance': buy_insurance,
@@ -158,7 +159,7 @@ def profile_page():
     st.subheader("📦 My rented equipment")
     owned = [p for p in st.session_state.ALL_PRODUCTS if p['owner'] == st.session_state.current_user]
     for item in owned:
-        st.write(f"**{item['name']}** - €{item['price']}/day")
+        st.write(f"**{item['name']}** - €{item['original_price']}/day")
         st.image(item['images'][0], width=150)
         st.write("Status：" + ("Rented" if item['borrower'] else "Not rented yet"))
 
