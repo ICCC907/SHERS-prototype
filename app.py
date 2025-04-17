@@ -152,14 +152,14 @@ def profile_page():
     st.title("🧍 My information")
 
     st.subheader("📦 My rented equipment")
-    owned = [p for p in st.session_state.products if p['owner'] == st.session_state.current_user]
+    owned = [p for p in st.session_state.ALL_PRODUCTS if p['owner'] == st.session_state.current_user]
     for item in owned:
         st.write(f"**{item['name']}** - €{item['price']}/day")
         st.image(item['images'][0], width=150)
         st.write("Status：" + ("Rented" if item['borrower'] else "Not rented yet"))
 
     st.subheader("🛒 My order")
-    my_orders = [p for p in st.session_state.ALL_PRODUCTS if p['owner'] == st.session_state.current_user]
+    my_orders = [o for o in st.session_state.orders if o['user'] == st.session_state.current_user]
     for order in my_orders:
         st.write(f"Equipment：{order['item']}，Price：€{order['price']}，Return status：{'✅ Returned' if order['returned'] else '❌ Not returned'}")
         if not order['returned'] and st.button(f"Return {order['item']}", key=f"return_{order['item']}"):
