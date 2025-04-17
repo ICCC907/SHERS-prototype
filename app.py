@@ -105,7 +105,7 @@ def detail_view(product):
             'user': st.session_state.current_user,
             'item': product['name'],
             'price': product['price'],
-            'returned': False
+            'returned': False,
             'pickup_location': user_loc
         })
         st.success("✅ Payment successful! Thank you for your contribution to protecting the environment.")
