@@ -55,7 +55,7 @@ def main_page():
         
 def welcome_page():
     st.title("🎉 Welcome to SHERS!")
-    st.write("SHERS (Second-Hand Equipment Rental Service) is designed to help international students and temporary residents in Finland easily rent and lend sports equipment.")
+    st.write("SHERS (Second-Hand Equipment Rental Service) is designed to help you easily rent and lend sports equipment.")
     st.markdown("**Key Features:**")
     st.markdown("- 🛠️ List your unused equipment")
     st.markdown("- 🔍 Search and rent nearby gear")
