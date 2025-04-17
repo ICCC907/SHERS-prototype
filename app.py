@@ -108,7 +108,7 @@ def detail_view(product):
             'returned': False,
             'pickup_location': user_loc
         })
-        st.success("✅ Payment successful! Thank you for your contribution to protecting the environment.")
+            st.success("✅ Payment successful! Thank you for your contribution to protecting the environment.")
     st.subheader("💬 Messages")
     if product['name'] not in st.session_state.messages:
         st.session_state.messages[product['name']] = []
