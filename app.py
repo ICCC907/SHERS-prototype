@@ -92,8 +92,9 @@ def publish_page():
                 'name': name,
                 'desc': desc,
                 'price': price,
+                'location': location,
                 'images': [img.read() for img in images],
-                'owner': st.session_state.current_user,
+                'owner': st.session_state.current_user,  # 👈 标记设备的主人是谁
                 'borrower': None,
                 'returned': False
             })
