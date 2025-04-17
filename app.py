@@ -131,6 +131,10 @@ def detail_view(product):
             distance = geodesic(coords1, coords2).km
             st.info(f"Estimated distance: {distance:.2f} km")
     st.subheader("💳 Pay")
+    rental_days = st.number_input("📆 How many days do you want to rent?", min_value=1, value=1)
+    total_cost = product['price'] * rental_days
+    st.info(f"Estimated total cost: €{total_cost:.2f}")
+
     if st.button("Simulate Payment"):
         if not user_loc:
             st.warning("Enter pickup address.")
@@ -140,6 +144,8 @@ def detail_view(product):
                 'user': st.session_state.current_user,
                 'item': product['name'],
                 'price': product['price'],
+                'days': rental_days,
+                'total': total_cost,
                 'returned': False,
                 'pickup_location': user_loc
             })
@@ -177,7 +183,7 @@ def profile_page():
     st.subheader("🛒 My order")
     my_orders = [o for o in st.session_state.orders if o['user'] == st.session_state.current_user]
     for order in my_orders:
-        st.write(f"Equipment：{order['item']}，Price：€{order['price']}，Return status：{'✅ Returned' if order['returned'] else '❌ Not returned'}")
+        st.write(f"Equipment：{order['item']}，Daily Price：€{order['price']}，Days：{order['days']}，Total：€{order['total']:.2f}，Return status：{'✅ Returned' if order['returned'] else '❌ Not returned'}")
         if not order['returned'] and st.button(f"Return {order['item']}", key=f"return_{order['item']}"):
             order['returned'] = True
             for p in st.session_state.ALL_PRODUCTS:
