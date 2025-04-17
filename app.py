@@ -165,7 +165,7 @@ def profile_page():
     st.subheader("🛒 My order")
     my_orders = [o for o in st.session_state.orders if o['user'] == st.session_state.current_user]
     for order in my_orders:
-        st.write(f"Equipment：{order['item']}，Price：€{order['price']}，Return status：{'✅ Returned' if order['returned'] else '❌ Not returned'}")
+        st.write(f"Equipment：{order['item']}，Price：€{order['price-0.1*price']}，Return status：{'✅ Returned' if order['returned'] else '❌ Not returned'}")
         if not order['returned'] and st.button(f"Return {order['item']}", key=f"return_{order['item']}"):
             order['returned'] = True
             st.success(f"You have successfully returned {order['item']}")
