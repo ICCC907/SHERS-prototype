@@ -66,28 +66,37 @@ def publish_page():
         st.warning("Please log in to list equipment.")
         return
 
-    st.title("📦 List Equipment")
-    name = st.text_input("Name")
+    st.title("📦 List Your Equipment")
+    name = st.text_input("Equipment Name")
     desc = st.text_area("Description")
     price = st.number_input("Price per day (€)", min_value=1)
-    location = st.text_input("📍 Location")
-    images = st.file_uploader("Upload photos", type=["png", "jpg"], accept_multiple_files=True)
+    location = st.text_input("📍 Equipment Location")
+    images = st.file_uploader("Upload Photos (JPG/PNG)", type=["png", "jpg", "jpeg"], accept_multiple_files=True)
+
+    # 显示上传的图像预览
+    if images:
+        for img in images:
+            st.image(img, width=150)
 
     if st.button("Submit"):
-        if not name or not images or not location:
-            st.warning("Please fill all fields.")
+        if not name or not location or not images:
+            st.warning("Please complete all fields.")
         else:
-            st.session_state.products.append({
-                'name': name,
-                'desc': desc,
-                'price': price,
-                'location': location,
-                'images': [img.read() for img in images],
-                'owner': st.session_state.current_user,
-                'borrower': None,
-                'returned': False
-            })
-            st.success("Your equipment has been listed successfully!")
+            try:
+                st.session_state.products.append({
+                    'name': name,
+                    'desc': desc,
+                    'price': price,
+                    'location': location,
+                    'images': [img.read() for img in images],
+                    'owner': st.session_state.current_user,
+                    'borrower': None,
+                    'returned': False
+                })
+                st.success("✅ Your equipment has been listed!")
+            except Exception as e:
+                st.error(f"Something went wrong: {e}")
+
 
 
 def detail_view(product):
