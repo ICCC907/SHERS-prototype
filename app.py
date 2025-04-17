@@ -169,7 +169,7 @@ def main_page():
         welcome_page()
     elif selected == "Search Equipment":
         homepage()
-    elif selected == "List Equipment":
+    elif selected == "Rent Out Equipment":
         publish_page()
     elif selected == "My Information":
         profile_page()
