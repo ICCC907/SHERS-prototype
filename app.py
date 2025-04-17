@@ -52,13 +52,16 @@ def homepage():
             st.rerun()
         return
     results = [p for p in st.session_state.products if search.lower() in p['name'].lower()]
-    st.write(f"{len(results)} results found.")
+    if search:  # 只有当用户输入了内容
+        results = [p for p in st.session_state.products if search.lower() in p['name'].lower()]
+        st.success(f"{len(results)} results found")
     for idx, item in enumerate(results):
         st.image(item['images'][0], width=200)
         st.write(f"**{item['name']}** - €{item['price']}/day - 📍 {item['location']}")
         if st.button(f"View Details {item['name']}", key=f"view_{idx}"):
             st.session_state.selected_product = item
             st.rerun()
+
 
 def publish_page():
     st.title("📦 Rent Out Your Equipment")
