@@ -78,7 +78,7 @@ def publish_page():
             st.warning("Please fill all fields.")
         else:
             if buy_insurance:
-            st.info(f"💸 €{insurance_fee} deducted for equipment insurance.")
+                st.info(f"💸 €{insurance_fee} deducted for equipment insurance.")
             st.session_state.products.append({
                 'name': name,
                 'desc': desc,
