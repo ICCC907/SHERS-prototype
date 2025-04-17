@@ -48,6 +48,7 @@ def welcome_page():
     st.metric("♻️ Plan to save CO₂ emissions", "200 tons")
 
 def homepage():
+    global GLOBAL_PRODUCTS
     st.title("🔍 Search Equipment")
     search = st.text_input("Feel free to explore and find the device that best suits your preferences", key="search_input")
     if st.session_state.selected_product:
@@ -79,6 +80,7 @@ def homepage():
 
 
 def publish_page():
+    global GLOBAL_PRODUCTS
     st.title("📦 Rent Out Your Equipment")
     name = st.text_input("Name of equipment")
     desc = st.text_area("Description")
@@ -158,6 +160,7 @@ def support_page():
             st.warning(f"{u}: {m}")
 
 def profile_page():
+    global GLOBAL_PRODUCTS
     st.title("🧍 My information")
 
     st.subheader("📦 My rented equipment")
