@@ -70,7 +70,7 @@ def publish_page():
     price = st.number_input("Rent Price per day (€)", min_value=1)
     location = st.text_input("📍 Location")
     images = st.file_uploader("Upload photos", type=["png", "jpg"], accept_multiple_files=True)
-    buy_insurance = st.checkbox("✅ Purchase insurance for this equipment (€2.00)")
+    buy_insurance = st.checkbox("Purchase insurance for this equipment (€2.00)")
     insurance_fee = 3 if buy_insurance else 0
 
     if st.button("Upload"):
@@ -82,7 +82,7 @@ def publish_page():
             st.session_state.products.append({
                 'name': name,
                 'desc': desc,
-                'price': price,
+                'price': price+price*0.1,
                 'location': location,
                 'images': [img.read() for img in images],
                 'owner': st.session_state.current_user,
