@@ -42,16 +42,15 @@ def welcome_page():
 
 def homepage():
     st.title("🔍 Search Equipment")
-    search = st.text_input("Feel free to explore and find the device that best suits your preferences", key="search_input")
+    search = st.text_input("Search equipment", key="search_input")
     if st.session_state.selected_product:
         detail_view(st.session_state.selected_product)
-        if st.button("🔙 Search results"):
+        if st.button("Back to results"):
             st.session_state.selected_product = None
             st.rerun()
         return
     results = [p for p in st.session_state.products if search.lower() in p['name'].lower()]
     st.write(f"{len(results)} results found.")
-
     for idx, item in enumerate(results):
         st.image(item['images'][0], width=200)
         st.write(f"**{item['name']}** - €{item['price']}/day - 📍 {item['location']}")
@@ -88,30 +87,26 @@ def detail_view(product):
     st.write(product['desc'])
     st.write(f"📍 {product['location']}")
     st.write(f"💰 €{product['price']}/day")
-    user_loc = st.text_input("📍 Your address")
+    user_loc = st.text_input("📍 Your pickup address")
     if user_loc:
         coords1 = get_coords(product['location'])
         coords2 = get_coords(user_loc)
         if coords1 and coords2:
             distance = geodesic(coords1, coords2).km
             st.info(f"Estimated distance: {distance:.2f} km")
-
-    st.subheader("💳 Pay")
-    if st.button("Simulated payment"):
+    if st.button("Simulate Payment"):
         if not user_loc:
-            st.warning("Enter your address.")
-        elif product['borrower'] is not None and not product['returned']:
-            st.error("This equipment is currently rented and not yet returned.")
+            st.warning("Enter pickup address.")
         else:
             product['borrower'] = st.session_state.current_user
             st.session_state.orders.append({
-            'user': st.session_state.current_user,
-            'item': product['name'],
-            'price': product['price'],
-            'returned': False,
-            'pickup_location': user_loc
-        })
-            st.success("✅ Payment successful! Thank you for your contribution to protecting the environment.")
+                'user': st.session_state.current_user,
+                'item': product['name'],
+                'price': product['price'],
+                'returned': False,
+                'pickup_location': user_loc
+            })
+            st.success("Payment simulated.")
     st.subheader("💬 Messages")
     if product['name'] not in st.session_state.messages:
         st.session_state.messages[product['name']] = []
@@ -132,24 +127,20 @@ def support_page():
         for u, m in st.session_state.support_messages:
             st.warning(f"{u}: {m}")
 
-# 我的个人中心
 def profile_page():
-    st.title("🧍 My information")
-
-    st.subheader("📦 My rented equipment")
-    owned = [p for p in st.session_state.products if p['owner'] == st.session_state.current_user]
-    for item in owned:
-        st.write(f"**{item['name']}** - €{item['price']}/天")
-        st.image(item['images'][0], width=150)
-        st.write("Status：" + ("Rented" if item['borrower'] else "Not rented yet"))
-
-    st.subheader("🛒 My order")
-    my_orders = [o for o in st.session_state.orders if o['user'] == st.session_state.current_user]
-    for order in my_orders:
-        st.write(f"Equipment：{order['item']}，Price：€{order['price']}，Return status：{'✅ Returned' if order['returned'] else '❌ Not returned'}")
-        if not order['returned'] and st.button(f"Return {order['item']}", key=f"return_{order['item']}"):
-            order['returned'] = True
-            st.success(f"You have successfully returned {order['item']}")
+    st.title("👤 My Account")
+    st.subheader("📦 My Listings")
+    for p in st.session_state.products:
+        if p['owner'] == st.session_state.current_user:
+            st.write(f"{p['name']} - €{p['price']}/day - {'Rented' if p['borrower'] else 'Available'}")
+            st.image(p['images'][0], width=100)
+    st.subheader("🛒 My Orders")
+    for o in st.session_state.orders:
+        if o['user'] == st.session_state.current_user:
+            st.write(f"{o['item']} - €{o['price']} - Returned: {'✅' if o['returned'] else '❌'}")
+            if not o['returned'] and st.button(f"Return {o['item']}", key=f"ret_{o['item']}"):
+                o['returned'] = True
+                st.success("Marked as returned.")
 
 def logout():
     for key in list(st.session_state.keys()):
@@ -158,7 +149,7 @@ def logout():
 
 def main_page():
     st.sidebar.success(f"👋 Welcome, {st.session_state.current_user}")
-    pages = ["Home", "Search Equipment", "Rent Out Equipment", "My Information", "Customer Support"]
+    pages = ["Welcome", "Search Equipment", "List Equipment", "My Account", "Customer Support"]
     selected = st.sidebar.radio("Navigation", pages)
     if "active_page" not in st.session_state:
         st.session_state.active_page = selected
@@ -168,13 +159,13 @@ def main_page():
         st.rerun()
     st.sidebar.button("Log out", on_click=logout)
 
-    if selected == "Home":
+    if selected == "Welcome":
         welcome_page()
     elif selected == "Search Equipment":
         homepage()
-    elif selected == "Rent out Equipment":
+    elif selected == "List Equipment":
         publish_page()
-    elif selected == "My Information":
+    elif selected == "My Account":
         profile_page()
     elif selected == "Customer Support":
         support_page()
