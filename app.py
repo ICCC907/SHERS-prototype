@@ -63,9 +63,13 @@ def homepage():
             st.write(f"**{item['name']}** - €{item['price']}/day - 📍 {item['location']}")
             ins = "🛡️ Insured" if item.get("insurance") else "❌ No insurance"
             st.write(f"Insurance: {ins}")
-            if st.button(f"View {item['name']}", key=f"view_{idx}"):
-                st.session_state.selected_product = item
-                st.rerun()
+            if item['borrower'] and not item['returned']:
+                st.warning("🚫 Currently rented")
+            else:
+                if st.button(f"View {item['name']}", key=f"view_{idx}"):
+                    st.session_state.selected_product = item
+                    st.rerun()
+
     else:
         st.info("Please enter a keyword to search for equipment.")
 
@@ -89,7 +93,7 @@ def publish_page():
             st.session_state.ALL_PRODUCTS.append({
                 'name': name,
                 'desc': desc,
-                'price': price,
+                'price': price+0.1*price,
                 'location': location,
                 'images': [img.read() for img in images],
                 'insurance': buy_insurance,
