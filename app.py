@@ -46,7 +46,14 @@ def welcome_page():
 
 def homepage():
     st.title("🔍 Search Equipment")
-    search = st.text_input("Feel free to explore and find the device that best suits your preferences", key="search_input")
+    from datetime import date
+    search = st.text_input("🔍 Feel free to explore and find the device that best suits your preferences.", key="search_input")
+    col1, col2 = st.columns(2)
+    with col1:
+        rental_days = st.number_input("📆 Rental Days", min_value=1, value=1)
+        with col2:
+            max_total_price = st.number_input("💰 Max Total Price (€)", min_value=0.0, value=100.0)
+
     if st.session_state.selected_product:
         detail_view(st.session_state.selected_product)
         if st.button("🔙 Search results"):
@@ -55,7 +62,11 @@ def homepage():
         return
    
     if search:
-        results = [p for p in st.session_state.ALL_PRODUCTS if search.lower() in p['name'].lower()]
+        results = [
+            p for p in st.session_state.ALL_PRODUCTS
+            if search.lower() in p['name'].lower() and (p['price'] * rental_days <= max_total_price)
+        ]
+
         st.success(f"{len(results)} result(s) found.")
 
         for idx, item in enumerate(results):
