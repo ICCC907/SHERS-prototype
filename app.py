@@ -60,7 +60,7 @@ def homepage():
 
         for idx, item in enumerate(results):
             st.image(item['images'][0], width=200)
-            st.write(f"**{item['name']}** - €{item['price2']}/day - 📍 {item['location']}")
+            st.write(f"**{item['name']}** - €{item['price']}/day - 📍 {item['location']}")
             ins = "🛡️ Insured" if item.get("insurance") else "❌ No insurance"
             st.write(f"Insurance: {ins}")
             if item['borrower'] and not item['returned']:
@@ -93,8 +93,7 @@ def publish_page():
             st.session_state.ALL_PRODUCTS.append({
                 'name': name,
                 'desc': desc,
-                'price1': price+0.1*price,
-                'price2': price,
+                'price': price+0.1*price,
                 'location': location,
                 'images': [img.read() for img in images],
                 'insurance': buy_insurance,
@@ -111,7 +110,7 @@ def detail_view(product):
     st.image(product['images'], width=300)
     st.write(product['desc'])
     st.write(f"📍 {product['location']}")
-    st.write(f"💰 €{product['price1']}/day")
+    st.write(f"💰 €{product['price']}/day")
     user_loc = st.text_input("📍 Your address")
     if user_loc:
         coords1 = get_coords(product['location'])
@@ -159,14 +158,14 @@ def profile_page():
     st.subheader("📦 My rented equipment")
     owned = [p for p in st.session_state.ALL_PRODUCTS if p['owner'] == st.session_state.current_user]
     for item in owned:
-        st.write(f"**{item['name']}** - €{item['price2']}/day")
+        st.write(f"**{item['name']}** - €{item['price']}/day")
         st.image(item['images'][0], width=150)
         st.write("Status：" + ("Rented" if item['borrower'] else "Not rented yet"))
 
     st.subheader("🛒 My order")
     my_orders = [o for o in st.session_state.orders if o['user'] == st.session_state.current_user]
     for order in my_orders:
-        st.write(f"Equipment：{order['item']}，Price：€{order['price1']}，Return status：{'✅ Returned' if order['returned'] else '❌ Not returned'}")
+        st.write(f"Equipment：{order['item']}，Price：€{order['price']}，Return status：{'✅ Returned' if order['returned'] else '❌ Not returned'}")
         if not order['returned'] and st.button(f"Return {order['item']}", key=f"return_{order['item']}"):
             order['returned'] = True
             st.success(f"You have successfully returned {order['item']}")
