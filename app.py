@@ -23,8 +23,10 @@ if 'orders' not in st.session_state:
 # 登录注册逻辑
 def login_user(username, password):
     if username in st.session_state.users and st.session_state.users[username] == password:
-        st.session_state.logged_in = True
+        # ✅ 清空旧数据（模拟用户隔离）
+        st.session_state.selected_product = None
         st.session_state.current_user = username
+        st.session_state.logged_in = True
         return True
     return False
 
