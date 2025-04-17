@@ -100,7 +100,6 @@ def detail_view(product):
         if not user_loc:
             st.warning("Enter pickup address.")
         else:
-        st.success("✅ Payment successful! Thank you for your contribution to protecting the environment.")
         product['borrower'] = st.session_state.current_user
         st.session_state.orders.append({
             'user': st.session_state.current_user,
@@ -109,7 +108,7 @@ def detail_view(product):
             'returned': False
             'pickup_location': user_loc
         })
-
+        st.success("✅ Payment successful! Thank you for your contribution to protecting the environment.")
     st.subheader("💬 Messages")
     if product['name'] not in st.session_state.messages:
         st.session_state.messages[product['name']] = []
