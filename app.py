@@ -130,8 +130,8 @@ def support_page():
             st.warning(f"{u}: {m}")
 
 def profile_page():
-    st.title("👤 My Account")
-    st.subheader("📦 My Listings")
+    st.title("👤 My Information")
+    st.subheader("📦 My rented equipment")
     for p in st.session_state.products:
         if p['owner'] == st.session_state.current_user:
             st.write(f"{p['name']} - €{p['price']}/day - {'Rented' if p['borrower'] else 'Available'}")
@@ -151,7 +151,7 @@ def logout():
 
 def main_page():
     st.sidebar.success(f"👋 Welcome, {st.session_state.current_user}")
-    pages = ["Welcome", "Search Equipment", "List Equipment", "My Account", "Customer Support"]
+    pages = ["Home", "Search Equipment", "Rent Out Equipment", "My Information", "Customer Support"]
     selected = st.sidebar.radio("Navigation", pages)
     if "active_page" not in st.session_state:
         st.session_state.active_page = selected
@@ -161,13 +161,13 @@ def main_page():
         st.rerun()
     st.sidebar.button("Log out", on_click=logout)
 
-    if selected == "Welcome":
+    if selected == "Home":
         welcome_page()
     elif selected == "Search Equipment":
         homepage()
-    elif selected == "List Equipment":
+    elif selected == "Rent out Equipment":
         publish_page()
-    elif selected == "My Account":
+    elif selected == "My Information":
         profile_page()
     elif selected == "Customer Support":
         support_page()
